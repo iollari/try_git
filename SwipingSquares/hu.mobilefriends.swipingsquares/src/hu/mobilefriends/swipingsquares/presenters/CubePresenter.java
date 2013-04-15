@@ -204,4 +204,10 @@ public class CubePresenter {
 			}
 		}
 	}
+	
+	public void Shuffle()
+	{
+		this.cubeModel.randomMix();
+		refreshCubeView();
+	}	
 }

@@ -8,8 +8,8 @@ import hu.mobilefriends.swipingsquares.views.CubeView;
 import android.app.Activity;
 import android.os.SystemClock;
 import android.view.Display;
+import android.view.View;
 import android.widget.Chronometer;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class SwipingSquaresPlayActivity extends Activity {
@@ -38,6 +38,8 @@ public class SwipingSquaresPlayActivity extends Activity {
     	super.onResume();
    	         	
         setContentView(R.layout.activity_main);
+        
+        initLayoutReferences();
               
 		// létrehozzuk a játéktáblát
         createCube();
@@ -46,30 +48,14 @@ public class SwipingSquaresPlayActivity extends Activity {
 		startMoveListener();
 
         // elindítjuk az órát
-        startWatch();
+        resetWatch();
     }
-        
-	private void startMoveListener() {
-		
+    
+	private void initLayoutReferences() 
+	{
 		_moveCountText = (TextView) findViewById(R.id.moveCount);
-		
-		_cubePresenter.SetOnCubeMoveListener(new OnCubeMoveListener ()
-		{
-			public void OnCubeMove()
-			{
-				_moveCount++;
-				_moveCountText.setText(String.valueOf(_moveCount));
-			}
-		});
-	}
-	
-	private void startWatch() {
-        _stopWatch = (Chronometer) findViewById(R.id.chrono);
-
-        // Ha onPause utáni visszatérés történik, akkor a stoppert "onnan folytatjuk, ahol abbahagytuk"
-		_stopWatch.setBase(SystemClock.elapsedRealtime() - _elapsedTimeBeforePause);		
-
-        _stopWatch.start();               		
+		_stopWatch = (Chronometer) findViewById(R.id.chrono);
+		_cubeView = (CubeView)findViewById(R.id.cubeview);
 	}
 
 	private void createCube()
@@ -77,20 +63,17 @@ public class SwipingSquaresPlayActivity extends Activity {
         // létrehozzuk a Modelt
 		createCubeModel();
 
-		// inicializáljuk a View-t
-		_cubeView = (CubeView)findViewById(R.id.cubeview);
-		
-        _cubeView.initView(_cubeModel.cstCubeLeft, _cubeModel.cstCubeTop, 
+        // inicializáljuk a View-t
+		_cubeView.initView(_cubeModel.cstCubeLeft, _cubeModel.cstCubeTop, 
 				 _cubeModel.cstRectSize, _cubeModel.cstCubeSize, _cubeModel.cstRectPerRow, 
 				 _cubeModel.cstPadding);
-        
-        _cubeView.getLayoutParams().height = _cubeModel.cstCubeSize;
         
         // létrehozzuk a Presentert
         createCubePresenter();        		
 	}
 	
-    private void createCubeModel()
+    @SuppressWarnings("deprecation")
+	private void createCubeModel()
     {
         if (_cubeBytes == null) 
         {            
@@ -123,6 +106,28 @@ public class SwipingSquaresPlayActivity extends Activity {
     {
 		_cubePresenter = new CubePresenter(_cubeModel, _cubeView, _cubeBytes == null);
     }
+        
+	private void startMoveListener() 
+	{			
+		_cubePresenter.SetOnCubeMoveListener(new OnCubeMoveListener ()
+		{
+			public void OnCubeMove()
+			{
+				_moveCount++;
+				resetMoveCountText();
+			}
+		});
+	}
+	
+	private void resetMoveCountText() {
+		_moveCountText.setText(String.valueOf(_moveCount));		
+	}
+	
+	private void resetWatch() {        
+        // Ha onPause utáni visszatérés történik, akkor a stoppert "onnan folytatjuk, ahol abbahagytuk"
+		_stopWatch.setBase(SystemClock.elapsedRealtime() - _elapsedTimeBeforePause);		
+        _stopWatch.start();               		
+	}
 
     public void onPause() {
     	super.onPause();
@@ -131,5 +136,14 @@ public class SwipingSquaresPlayActivity extends Activity {
 		
 		// megjegyezzük, hol állt a stopper...
 		_elapsedTimeBeforePause = SystemClock.elapsedRealtime() - _stopWatch.getBase();
+    }
+    
+    public void onBtnShufflePressed(View btnShuffle)
+    {
+		_moveCount = 0;
+		_elapsedTimeBeforePause = 0;
+		resetWatch();
+		resetMoveCountText();
+		_cubePresenter.Shuffle();
     }
 }

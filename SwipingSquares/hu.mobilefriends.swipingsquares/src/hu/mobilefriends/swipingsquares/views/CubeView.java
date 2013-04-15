@@ -2,10 +2,8 @@ package hu.mobilefriends.swipingsquares.views;
 
 import hu.mobilefriends.swipingsquares.R;
 
-import android.R.integer;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -44,6 +42,8 @@ public class CubeView extends View {
 		this._cubeSize = cubeSize;
 		this._cubeRectPerRow = cubeRowPerLine;
 		this.cubePadding = cubePadding;
+		
+		this.getLayoutParams().height = this._cubeSize;
 		
 		// számított értékek
 		this.cubeRight = this.cubeLeft + this._cubeSize;
@@ -107,8 +107,6 @@ public class CubeView extends View {
 				}
 			}
 		}
-		
-		int h = this.getHeight();
 	}
 	
 	public void refreshMovingRectRow(int ix, int movingRectLeft, int movingRectTop, int movingRectColor) {
