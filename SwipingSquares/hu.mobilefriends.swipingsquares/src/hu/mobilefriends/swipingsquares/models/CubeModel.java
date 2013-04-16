@@ -20,46 +20,8 @@ public class CubeModel implements Serializable {
 	
 	public PositionModel[][] positions;
 	
-	public CubeModel(int rectPerRow, int cubeLeft, int cubeTop, int rectSize, int padding) {
-		
-		this.cstRectPerRow = rectPerRow;	
-		this.cstCubeLeft = cubeLeft;
-		this.cstCubeTop = cubeTop;
-		this.cstRectSize = rectSize;
-		this.cstPadding = padding;
-		
-		// számított értékek
-		this.cstCubeSize = cstRectPerRow * (cstRectSize + 2*cstPadding);
-		this.cstCubeRight = cstCubeLeft + cstCubeSize;
-		this.cstCubeBottom = cstCubeTop + cstCubeSize;
-		
-		this.cstMovingRectCount = (2*this.cstRectPerRow) + 1;
-		
-		// pozíciók (PositionModel) és négyzetek (RectModel) létrehozása 
-		this.positions = new PositionModel[cstRectPerRow][cstRectPerRow];
-		int i = 0;
-		int j = 0;
-		for (i=0;i<cstRectPerRow;i++) {
-			for (j=0;j<cstRectPerRow;j++) {
-				PositionModel actPosition = new PositionModel();
-				actPosition.cellLeft = cstCubeLeft + (i*(cstRectSize+(2*cstPadding)));
-				actPosition.cellTop = cstCubeTop + (j*(cstRectSize+(2*cstPadding)));
-				actPosition.cellRight = actPosition.cellLeft + cstRectSize + (2*cstPadding);
-				actPosition.cellBottom = actPosition.cellTop + cstRectSize + (2*cstPadding);
-				
-				actPosition.cellCenterX = actPosition.cellLeft + Math.round((actPosition.cellRight-actPosition.cellLeft)/2);
-				actPosition.cellCenterY = actPosition.cellTop + Math.round((actPosition.cellBottom-actPosition.cellTop)/2);
-
-				actPosition.rect = new RectModel(actPosition.cellLeft + cstPadding, 
-												 actPosition.cellTop + cstPadding, cstRectSize, j);
-				this.positions[i][j] = actPosition;
-			}
-		}
-		
-		// mozgatandó négyzeteket tároló tömbök inicializálása
-		this.movingRectsColumn = new RectModel[this.cstMovingRectCount];
-		this.movingRectsRow = new RectModel[this.cstMovingRectCount];
-	}
+//	public CubeModel(int rectPerRow, int cubeLeft, int cubeTop, int rectSize, int padding) {		
+//	}
 	
 	// egy sor vagy oszlop összes négyzetének léptetése egy pozícióval jobbra vagy lefelé (orientation-tõl függ)
 	// (valójában csak a négyzetek színét cserélgetjük)
@@ -213,5 +175,45 @@ public class CubeModel implements Serializable {
 				this.movingRectsColumn[i].rectBottom = this.movingRectsColumn[i].rectTop + this.cstRectSize;
 			}							
 		}		
+	}
+
+	public void Init(int rectPerRow, int cubeLeft, int cubeTop, int rectSize, int padding) {
+		this.cstRectPerRow = rectPerRow;	
+		this.cstCubeLeft = cubeLeft;
+		this.cstCubeTop = cubeTop;
+		this.cstRectSize = rectSize;
+		this.cstPadding = padding;
+		
+		// számított értékek
+		this.cstCubeSize = cstRectPerRow * (cstRectSize + 2*cstPadding);
+		this.cstCubeRight = cstCubeLeft + cstCubeSize;
+		this.cstCubeBottom = cstCubeTop + cstCubeSize;
+		
+		this.cstMovingRectCount = (2*this.cstRectPerRow) + 1;
+		
+		// pozíciók (PositionModel) és négyzetek (RectModel) létrehozása 
+		this.positions = new PositionModel[cstRectPerRow][cstRectPerRow];
+		int i = 0;
+		int j = 0;
+		for (i=0;i<cstRectPerRow;i++) {
+			for (j=0;j<cstRectPerRow;j++) {
+				PositionModel actPosition = new PositionModel();
+				actPosition.cellLeft = cstCubeLeft + (i*(cstRectSize+(2*cstPadding)));
+				actPosition.cellTop = cstCubeTop + (j*(cstRectSize+(2*cstPadding)));
+				actPosition.cellRight = actPosition.cellLeft + cstRectSize + (2*cstPadding);
+				actPosition.cellBottom = actPosition.cellTop + cstRectSize + (2*cstPadding);
+				
+				actPosition.cellCenterX = actPosition.cellLeft + Math.round((actPosition.cellRight-actPosition.cellLeft)/2);
+				actPosition.cellCenterY = actPosition.cellTop + Math.round((actPosition.cellBottom-actPosition.cellTop)/2);
+
+				actPosition.rect = new RectModel(actPosition.cellLeft + cstPadding, 
+												 actPosition.cellTop + cstPadding, cstRectSize, j);
+				this.positions[i][j] = actPosition;
+			}
+		}
+		
+		// mozgatandó négyzeteket tároló tömbök inicializálása
+		this.movingRectsColumn = new RectModel[this.cstMovingRectCount];
+		this.movingRectsRow = new RectModel[this.cstMovingRectCount];
 	}
 }

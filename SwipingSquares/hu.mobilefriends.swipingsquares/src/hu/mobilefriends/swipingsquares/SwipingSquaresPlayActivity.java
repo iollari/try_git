@@ -94,7 +94,8 @@ public class SwipingSquaresPlayActivity extends Activity {
         	// négyzetek mérete
         	int rectSize = Math.round((cubeSize - ((rectPerRow * 2) * padding)) / rectPerRow);
         	
-        	_cubeModel = new CubeModel(rectPerRow, cubeLeft, cubeTop, rectSize, padding);
+        	_cubeModel = new CubeModel();
+        	_cubeModel.Init(rectPerRow, cubeLeft, cubeTop, rectSize, padding);
         } 
         else
         {
@@ -138,12 +139,34 @@ public class SwipingSquaresPlayActivity extends Activity {
 		_elapsedTimeBeforePause = SystemClock.elapsedRealtime() - _stopWatch.getBase();
     }
     
-    public void onBtnShufflePressed(View btnShuffle)
+    @SuppressWarnings("deprecation")
+	public void onBtnShufflePressed(View btnShuffle)
     {
 		_moveCount = 0;
 		_elapsedTimeBeforePause = 0;
 		resetWatch();
 		resetMoveCountText();
+		
+    	// ezt egyelõre itt beégetem, késõbb a user által választott értéket kapom majd...
+    	int rectPerRow = 3;
+    	
+    	// Méretek kiszámítása, és a tábla középre igazítása a kijelzõ felbontása alapján
+    	Display display = getWindowManager().getDefaultDisplay();
+   		this._screenWidth = display.getWidth(); 
+   		
+    	// padding 1%
+    	int padding = Math.round(this._screenWidth / 100);
+    	// tábla méret a szélesség 90%-a
+    	int cubeSize = Math.round((this._screenWidth * 90) / 100);
+    	// középre igazítás
+    	int cubeLeft = Math.round((this._screenWidth * 5) / 100);
+    	int cubeTop = 0;
+    	// négyzetek mérete
+    	int rectSize = Math.round((cubeSize - ((rectPerRow * 2) * padding)) / rectPerRow);
+    	
+//    	_cubeModel = new CubeModel();
+    	_cubeModel.Init(rectPerRow, cubeLeft, cubeTop, rectSize, padding);
+    	
 		_cubePresenter.Shuffle();
     }
 }
